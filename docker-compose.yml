@@ -1,0 +1,62 @@
+version: "3.3"
+services:
+    postgres:
+        image: postgres:10.3
+        restart: always
+        environment:
+            - POSTGRES_USER={usuarioDB}
+            - POSTGRES_PASSWORD={passwordDB}
+        volumes:
+            - norapostgres:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            noranet:
+    api:
+        image: node:16
+        volumes: 
+            - ./NoraApi/:/home/node/app
+        user: node
+        working_dir: /home/node/app/
+        command: "npm start"
+        links:
+            - postgres
+        ports:
+            - 8080:8080
+        environment:
+            - DB_HOST=postgres
+            - DB_USER={usuarioDB}
+            - DB_PASSWORD={passwordDB}
+            - DATABASE_URL=postgresql://{usuarioDB}:{passwordDB}@postgres:5432/mydb?schema=public
+            - PORT=8080
+            - API_KEY={Llave para autenticacion}
+            - CARPETA_SONIDOS=sonidos/
+            - MAILER_USER={email}
+            - MAILER_PASSWORD={passemail}
+        networks:
+            noranet:
+        depends_on:
+            - postgres
+    bot:
+        image: node:17
+        volumes: 
+            - ./NoraBot/:/home/node/app
+        user: node
+        working_dir: /home/node/app/
+        command: "npm start"
+        environment:
+            - SOUND_PREFIX=*
+            - COMAND_PREFIX=-
+            - TOKEN={tokenBotDiscord}
+            - OPENAITOKEN={tokenOpenAi(borrar en caso de no tener)}
+            - HOST=api:8080
+        networks:
+            noranet:
+        depends_on:
+            - postgres
+            - api
+volumes:
+    norapostgres:
+networks:
+    noranet:
+            

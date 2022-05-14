@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CategoriaDeSonido {
+  id  String @id @default(uuid())
+  nombre String @unique
+  comandos String[]
+  archivos String[]
+}
+
+model Usuario {
+  id  String @id @default(uuid())
+  nombre String
+  email String @unique
+  username String @unique
+  password String
+  isActive Boolean @default(false)
+  isAdmin Boolean @default(false)
+}
