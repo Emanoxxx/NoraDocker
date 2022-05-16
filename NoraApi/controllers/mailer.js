@@ -16,7 +16,7 @@ let mailerConfig = {
 
 exports.sendEmail = (asunto, html, destinatario) => {
     let email = {
-        from: "alethetwin@alethetwin.online", //remitente
+        from: usuario, //remitente
         to: destinatario, //destinatario
         subject: asunto, //asunto del correo
         html: html,
